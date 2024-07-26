@@ -1,6 +1,5 @@
 plugins {
     kotlin("jvm") version "2.0.0"
-    id("com.github.johnrengelman.shadow") version "8.1.1"
     `maven-publish`
 }
 
@@ -23,10 +22,6 @@ dependencies {
 
 kotlin {
     jvmToolchain(21)
-}
-
-tasks.build {
-    dependsOn("shadowJar")
 }
 
 publishing {
