@@ -1,7 +1,7 @@
-package me.honkling.portal.config.decoder
+package me.honkling.commonlib.config.decoder
 
 import cc.ekblad.toml.model.TomlValue
-import me.honkling.portal.config.value
+import me.honkling.commonlib.config.value
 import org.bukkit.Bukkit
 import org.bukkit.Location
 import kotlin.reflect.KType

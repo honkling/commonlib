@@ -1,4 +1,4 @@
-package me.honkling.portal.config.decoder
+package me.honkling.commonlib.config.decoder
 
 import cc.ekblad.toml.configuration.TomlMapperConfigurator
 import cc.ekblad.toml.model.TomlValue
