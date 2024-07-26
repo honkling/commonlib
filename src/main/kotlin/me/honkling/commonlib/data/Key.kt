@@ -1,5 +1,6 @@
 package me.honkling.commonlib.data
 
+import me.honkling.commonlib.commonLib
 import me.honkling.commonlib.lib.camelToSnake
 import org.bukkit.NamespacedKey
 import org.bukkit.persistence.PersistentDataHolder
@@ -14,7 +15,7 @@ class Key<P, C : Any>(
 
     operator fun getValue(thisRef: Any?, property: KProperty<*>): Key<P, C> {
         if (!this::key.isInitialized)
-            key = NamespacedKey("horizonmines", property.name.camelToSnake())
+            key = NamespacedKey(commonLib.plugin.name.lowercase().replace(" ", "_"), property.name.camelToSnake())
 
         return this
     }
