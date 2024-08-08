@@ -1,10 +1,12 @@
+import org.jetbrains.kotlin.gradle.plugin.KotlinPlatformType
+
 plugins {
     kotlin("jvm") version "2.0.0"
     `maven-publish`
 }
 
 group = "me.honkling"
-version = "0.1.1"
+version = "0.1.2"
 
 repositories {
     mavenCentral()
@@ -23,6 +25,7 @@ dependencies {
 kotlin {
     jvmToolchain(21)
 }
+
 
 publishing {
     publications {

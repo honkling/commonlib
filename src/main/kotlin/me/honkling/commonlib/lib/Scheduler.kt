@@ -9,7 +9,9 @@ import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
 import kotlin.reflect.KClass
 
-class SchedulerContext {
+private val contexts = mutableMapOf<String, SchedulerContext>()
+
+class SchedulerContext(private val id: String?) {
     private val listeners = mutableListOf<Listener>()
     private var ids = mutableListOf<Int>()
 
@@ -30,10 +32,20 @@ class SchedulerContext {
     fun resolve() {
         ids.forEach(scheduler::cancelTask)
         listeners.forEach(HandlerList::unregisterAll)
+
+        if (id != null && id in contexts)
+            contexts -= id
     }
 }
 
-fun scheduleTemporarily(task: SchedulerContext.() -> Unit) {
-    val context = SchedulerContext()
+fun scheduleTemporarily(id: String? = null, task: SchedulerContext.() -> Unit) {
+    val context = SchedulerContext(id)
     task.invoke(context)
+
+    if (id != null) {
+        if (id in contexts)
+            contexts[id]!!.resolve()
+
+        contexts[id] = context
+    }
 }
