@@ -16,7 +16,7 @@ class SchedulerContext(private val id: String?) {
     private val listeners = mutableListOf<Listener>()
     private var ids = mutableListOf<Int>()
 
-    fun <T : Event> subscribe(vararg events: KClass<T>, task: SchedulerContext.(T) -> Unit) {
+    fun <T : Event> subscribe(vararg events: KClass<out T>, task: SchedulerContext.(T) -> Unit) {
         val listener = object : Listener {} as Listener
         listeners += listener
 
