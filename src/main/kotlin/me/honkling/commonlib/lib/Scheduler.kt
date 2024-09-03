@@ -7,6 +7,7 @@ import org.bukkit.event.Event
 import org.bukkit.event.EventPriority
 import org.bukkit.event.HandlerList
 import org.bukkit.event.Listener
+import org.bukkit.plugin.EventExecutor
 import kotlin.reflect.KClass
 
 private val contexts = mutableMapOf<String, SchedulerContext>()
@@ -15,12 +16,16 @@ class SchedulerContext(private val id: String?) {
     private val listeners = mutableListOf<Listener>()
     private var ids = mutableListOf<Int>()
 
-    fun <T : Event> subscribe(event: KClass<T>, task: SchedulerContext.(T) -> Unit) {
+    fun <T : Event> subscribe(vararg events: KClass<T>, task: SchedulerContext.(T) -> Unit) {
         val listener = object : Listener {} as Listener
         listeners += listener
-        pluginManager.registerEvent(event.java, listener, EventPriority.NORMAL, { _, event ->
+
+        val executor = EventExecutor { _, event ->
             task.invoke(this, event as T)
-        }, commonLib.plugin)
+        }
+
+        for (event in events)
+            pluginManager.registerEvent(event.java, listener, EventPriority.NORMAL, executor, commonLib.plugin)
     }
 
     fun task(interval: Int, task: SchedulerContext.() -> Unit) {
