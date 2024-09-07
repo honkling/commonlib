@@ -7,7 +7,7 @@ import org.bukkit.persistence.PersistentDataHolder
 import org.bukkit.persistence.PersistentDataType
 import kotlin.reflect.KProperty
 
-class Key<P, C : Any>(
+open class Key<P, C : Any>(
     val type: PersistentDataType<P, C>,
     val default: C
 ) {
@@ -18,6 +18,14 @@ class Key<P, C : Any>(
             key = NamespacedKey(commonLib.plugin.name.lowercase().replace(" ", "_"), property.name.camelToSnake())
 
         return this
+    }
+
+    operator fun getValue(thisRef: Profile, property: KProperty<*>): C {
+        return this[thisRef.player]
+    }
+
+    operator fun setValue(thisRef: Profile, property: KProperty<*>, value: C) {
+        this[thisRef.player] = value
     }
 
     operator fun get(holder: PersistentDataHolder): C {
