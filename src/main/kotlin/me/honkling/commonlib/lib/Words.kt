@@ -4,21 +4,27 @@ private val camelCase = Regex("(^[a-z]+|[A-Z][a-z]*)")
 private val pascalCase = Regex("([A-Z][a-z]*)")
 
 enum class CaseType(
-    regex: String,
+    test: String,
+    match: String,
     val separator: String,
     val tokenMapper: (String, Int) -> String
 ) {
-    CamelCase("(^[a-z]+|[A-Z][a-z]*)", "", ::camelCaseToken),
-    PascalCase("([A-Z][a-z]*)", "", ::properCaseToken),
-    SnakeCase("[a-z]+(_|$)", "_", ::lowercaseToken),
-    ProperCase("[A-Z][a-z]*( |$)", " ", ::properCaseToken);
+    Camel("^([a-z]+)([A-Z][a-z]*)*$", "(^[a-z]+|[A-Z][a-z]*)", "", ::camelCaseToken),
+    Pascal("^([A-Z][a-z]*)+$", "([A-Z][a-z]*)", "", ::properCaseToken),
+    Snake("^([a-z]+(_|$))+$", "[a-z]+(_|$)", "_", ::lowercaseToken),
+    Kebab("^([a-z+(-|$))+$", "[a-z]+(_|$)", "-", ::lowercaseToken),
+    Proper("^([A-Za-z]+( |$))+$", "[A-Z][a-z]*( |$)", " ", ::properCaseToken);
 
-    val regex = Regex(regex)
+    val testRegex = Regex(test)
+    val regex = Regex(match)
+
+    fun isValid(input: String): Boolean {
+        return testRegex.matches(input)
+    }
 
     fun tokenize(input: String): List<String> {
-        return regex.findAll(input)
-            .map { it.value }
-            .toList()
+        return regex.find(input)!!.groupValues
+            .let { it.subList(1, it.size) }
     }
 
     fun joinTokens(vararg tokens: String): String {
@@ -35,8 +41,11 @@ enum class CaseType(
     }
 }
 
-fun String.convertCase(from: CaseType, to: CaseType): String {
-    return to.joinTokens(from.tokenize(this))
+fun String.convertCase(to: CaseType): String {
+    val case = CaseType.entries.find { it.isValid(this) }
+        ?: throw IllegalStateException("Invalid case for input '$this'")
+
+    return to.joinTokens(case.tokenize(this))
 }
 
 @Suppress("UNUSED_PARAMETER")
