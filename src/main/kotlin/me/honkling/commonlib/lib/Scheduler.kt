@@ -13,14 +13,17 @@ import kotlin.reflect.KClass
 private val contexts = mutableMapOf<String, SchedulerContext>()
 
 class SchedulerContext(private val id: String?) {
-    private val listeners = mutableListOf<Listener>()
+    val listeners = mutableListOf<Listener>()
     private var ids = mutableListOf<Int>()
 
-    fun <T : Event> subscribe(vararg events: KClass<out T>, task: SchedulerContext.(T) -> Unit) {
+    inline fun <reified T : Event> subscribe(vararg events: KClass<out T>, crossinline task: SchedulerContext.(T) -> Unit) {
         val listener = object : Listener {} as Listener
         listeners += listener
 
         val executor = EventExecutor { _, event ->
+            if (event !is T)
+                return@EventExecutor
+
             task.invoke(this, event as T)
         }
 
