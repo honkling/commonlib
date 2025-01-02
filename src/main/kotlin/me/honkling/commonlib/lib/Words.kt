@@ -23,8 +23,9 @@ enum class CaseType(
     }
 
     fun tokenize(input: String): List<String> {
-        return regex.find(input)!!.groupValues
-            .let { it.subList(1, it.size) }
+        return regex.findAll(input)
+            .map { it.value }
+            .toList()
     }
 
     fun joinTokens(vararg tokens: String): String {
