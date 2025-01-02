@@ -12,7 +12,7 @@ enum class CaseType(
     Camel("^([a-z]+)([A-Z][a-z]*)*$", "(^[a-z]+|[A-Z][a-z]*)", "", ::camelCaseToken),
     Pascal("^([A-Z][a-z]*)+$", "([A-Z][a-z]*)", "", ::properCaseToken),
     Snake("^([a-z]+(_|$))+$", "[a-z]+(_|$)", "_", ::lowercaseToken),
-    Kebab("^([a-z+(-|$))+$", "[a-z]+(_|$)", "-", ::lowercaseToken),
+    Kebab("^([a-z]+(-|$))+$", "[a-z]+(-|$)", "-", ::lowercaseToken),
     Proper("^([A-Za-z]+( |$))+$", "[A-Z][a-z]*( |$)", " ", ::properCaseToken);
 
     val testRegex = Regex(test)
